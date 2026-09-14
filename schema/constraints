@@ -1,0 +1,41 @@
+Primary Key Constraints:
+1. PASSENGER
+passenger_id is the primary key.
+Each passenger must have a unique, non-null identifier.
+email must be unique.
+
+2. FLIGHTS
+flight_id is the primary key.
+Each flight must have a unique, non-null identifier.
+is_active boolean only accepts two values; true or false. 
+
+3. BOOKINGS
+booking_id is the primary key.
+Each booking must have a unique, non-null identifier.
+
+AIRPORTS
+airport_id is the primary key.
+airport_id must adhere to the universl 3 character convention.
+Each airport must have a unique, non-null identifier.
+
+FLIGHT_ROUTES
+(flight_id, airport_id) is a composite primary key.
+A flight cannot be associated with the same airport more than once.
+airport_role must specify either Arrival or Depature.
+
+Foreign Key Constraints and ON DELETE Behavior:
+1. BOOKINGS.passenger_id → PASSENGER.passenger_id
+Every booking must reference an existing passenger.
+ON DELETE RESTRICT: A passenger cannot be deleted while they have existing bookings. This preserves booking history and prevents bookings from referencing a passenger that no longer exists.
+
+2. BOOKINGS.flight_id → FLIGHTS.flight_id
+Every booking must reference an existing flight.
+ON DELETE RESTRICT: A flight cannot be deleted while it has existing bookings. This preserves booking history and prevents existing bookings from referencing a nonexistent flight.
+
+3. FLIGHT_ROUTES.flight_id → FLIGHTS.flight_id
+Every flight-route record must reference an existing flight.
+ON DELETE CASCADE: When a flight is deleted, its associated route records should also be deleted because those route records have no independent meaning without the flight.
+
+4. FLIGHT_ROUTES.airport_id → AIRPORTS.airport_id
+Every flight-route record must reference an existing airport.
+ON DELETE RESTRICT: An airport cannot be deleted while it is associated with a flight route. This prevents a flight route from referencing an airport that no longer exists.
