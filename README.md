@@ -24,5 +24,6 @@ The database must be able to answer questions such as:
 - Is a given flight currently active, and how long is its duration?
 - Which airports are served by active flights?
 
+## ERD
 <img width="5636" height="3168" alt="Passenger Booking Flow Model-2026-09-14-021522" src="https://github.com/user-attachments/assets/d73ebc44-247f-496c-9ebd-728adb90f3c7" />
 
