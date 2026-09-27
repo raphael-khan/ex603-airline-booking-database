@@ -28,7 +28,7 @@ The `chk_flight_duration` constraint requires:
 `duration_min > 0`
 This prevents a flight from being stored with a duration of zero or a negative duration. Such a state could arise from incorrect user input, an application bug, or invalid imported data. Since an actual flight must take a positive amount of time, rejecting these values at the database level prevents invalid duration data regardless of which application writes to the database.
 
-### Nonnegative Booking Fare
+### Non-negative Booking Fare
 
 The `chk_booking_fare` constraint requires:
 `fare_paid >= 0`
