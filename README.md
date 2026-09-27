@@ -25,6 +25,7 @@ The database must be able to answer questions such as:
 - Which airports are served by active flights?
 
 ## ERD
-<img width="4636" height="3168" alt="image" src="https://github.com/user-attachments/assets/a1c9eb4e-f169-4183-82ef-df945fd38a45" />
+<img width="4636" height="3168" alt="Passenger Booking Flow Model-2026-09-27-132659" src="https://github.com/user-attachments/assets/f1c0c2cc-d584-496c-8319-5989194d5483" />
+
 
 
