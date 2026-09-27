@@ -25,6 +25,6 @@ The database must be able to answer questions such as:
 - Which airports are served by active flights?
 
 ## ERD
-<img width="4636" height="3168" alt="image" src="https://github.com/user-attachments/assets/585d904a-632f-4da6-a2a6-e292698930cd" />
+<img width="4636" height="3168" alt="image" src="https://github.com/user-attachments/assets/a1c9eb4e-f169-4183-82ef-df945fd38a45" />
 
 
