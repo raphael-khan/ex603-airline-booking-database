@@ -43,4 +43,6 @@ ON DELETE CASCADE: When a flight is deleted, its associated route records should
 6. FLIGHT_ROUTES.airport_id → AIRPORTS.airport_id. 
 Every flight-route record must reference an existing airport.  
 ON DELETE RESTRICT: An airport cannot be deleted while it is associated with a flight route.
-This prevents a flight route from referencing an airport that no longer exists.  
+This prevents a flight route from referencing an airport that no longer exists.
+
+7. Each FLIGHT_ROUTES record must have an airport_role of either DEPARTURE or ARRIVAL. The application workflow is responsible for ensuring that a complete flight route contains one departure and one arrival airport.
