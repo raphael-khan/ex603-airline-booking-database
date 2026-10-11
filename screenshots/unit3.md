@@ -1,4 +1,3 @@
-**TASK 3.1**
 <h3>Step 3.1a</h3>
 <img width="743" alt="3 1a" src="https://github.com/user-attachments/assets/90f2b77a-8d1d-47dc-8d44-6606f20244e7" />
 
@@ -34,15 +33,23 @@
 
 
 
-**TASK 3.2 PART A**
-
+<h3>step 3.2 Part A</h3>
 <img width="1034" height="404" alt="3 2a(iv)" src="https://github.com/user-attachments/assets/ab84635c-1b08-4846-a97b-2dde491f0e1a" />
+
+<br /><br />
+
 <img width="1031" height="439" alt="3 2a(iii)" src="https://github.com/user-attachments/assets/150bdd44-4018-43e6-b270-5d1f59233bc6" />
+
+<br /><br />
+
 <img width="1039" height="407" alt="3 2a(ii)" src="https://github.com/user-attachments/assets/f43ad93c-b9ba-4b60-a80c-60181e6db5dd" />
+
+<br /><br />
+
 <img width="1025" height="401" alt="3 2a(i)" src="https://github.com/user-attachments/assets/24a6bf5c-7b14-417a-befe-1554441408bc" />
 
 
-**TASK 3.2 PART B**
+<h3>step 3.2 Part B</h3>
 
 <img width="1032" height="1108" alt="3 2b(iii)" src="https://github.com/user-attachments/assets/e50f9ff8-4d4a-4ddb-b3ce-14cfa0450463" />
 <img width="1040" height="1103" alt="3 2b(ii)" src="https://github.com/user-attachments/assets/8d196292-d811-4e9e-9d33-856aa179fa90" />
