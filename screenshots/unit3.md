@@ -1,12 +1,37 @@
 **TASK 3.1**
+<h3>Step 3.1a</h3>
+<img width="743" alt="3 1a" src="https://github.com/user-attachments/assets/90f2b77a-8d1d-47dc-8d44-6606f20244e7" />
 
-<img width="1026" height="1107" alt="3 1g" src="https://github.com/user-attachments/assets/a2e8c206-4745-4037-b8e9-085062751b63" />
-<img width="1035" height="1114" alt="3 1fpng" src="https://github.com/user-attachments/assets/e12c899b-f864-41a7-a677-7cd4b61ab3ab" />
-<img width="1035" height="769" alt="3 1e" src="https://github.com/user-attachments/assets/f135c23b-8e78-4a83-aa0a-5a9bfa9a2791" />
-<img width="1023" height="1082" alt="3 1d" src="https://github.com/user-attachments/assets/fd6cef6e-72e8-4137-b54d-745eef5a6afc" />
-<img width="835" height="1126" alt="3 1c" src="https://github.com/user-attachments/assets/f1042162-9c3a-46d7-b4ce-1cda447683c8" />
-<img width="622" height="420" alt="3 1b" src="https://github.com/user-attachments/assets/68527dc2-2d5f-49ad-9daf-46b3f3011feb" />
-<img width="743" height="658" alt="3 1a" src="https://github.com/user-attachments/assets/90f2b77a-8d1d-47dc-8d44-6606f20244e7" />
+<br /><br />
+
+<h3>Step 3.1b</h3>
+<img width="622" alt="3 1b" src="https://github.com/user-attachments/assets/68527dc2-2d5f-49ad-9daf-46b3f3011feb" />
+
+<br /><br />
+
+<h3>Step 3.1c</h3>
+<img width="835" alt="3 1c" src="https://github.com/user-attachments/assets/f1042162-9c3a-46d7-b4ce-1cda447683c8" />
+
+<br /><br />
+
+<h3>Step 3.1d</h3>
+<img width="1023" alt="3 1d" src="https://github.com/user-attachments/assets/fd6cef6e-72e8-4137-b54d-745eef5a6afc" />
+
+<br /><br />
+
+<h3>Step 3.1e</h3>
+<img width="1035" alt="3 1e" src="https://github.com/user-attachments/assets/f135c23b-8e78-4a83-aa0a-5a9bfa9a2791" />
+
+<br /><br />
+
+<h3>Step 3.1f</h3>
+<img width="1035" alt="3 1fpng" src="https://github.com/user-attachments/assets/e12c899b-f864-41a7-a677-7cd4b61ab3ab" />
+
+<br /><br />
+
+<h3>Step 3.1g</h3>
+<img width="1026" alt="3 1g" src="https://github.com/user-attachments/assets/a2e8c206-4745-4037-b8e9-085062751b63" />
+
 
 
 **TASK 3.2 PART A**
