@@ -46,16 +46,16 @@ The schema also enforces important domain rules through database constraints. Pa
 
 #### Query Catalogue
 
-| Query | Business Question | SQL Concepts |
-|---|---|---|
-| `queries/unit4/q4_1.sql` — 4.1.1 | How many playback events occurred, what are the total, average, minimum, and maximum playback durations, and how many unique listeners participated? | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `COUNT(DISTINCT)` |
-| `queries/unit4/q4_1.sql` — 4.1.1 Data Quality | How many playback events are missing duration information? | `COUNT`, NULL handling |
-| `queries/unit4/q4_1.sql` — 4.1.2 | Which producers generate the most playback events, and how does average listening duration vary across producers? | `GROUP BY`, `COUNT`, `AVG`, `ORDER BY` |
-| `queries/unit4/q4_1.sql` — 4.1.3 | Which producers have at least five playback events, providing a minimum volume for performance comparisons? | `GROUP BY`, `HAVING`, `COUNT` |
-| `queries/unit4/q4_1.sql` — 4.1.4 | How does playback activity and average listening duration vary across producers and subscription tiers? | `JOIN`, `GROUP BY` with two dimensions, `AVG`, `COUNT` |
-| `queries/unit4/q4_2.sql` — 4.2A | How many total playback events and failed playback events does each producer generate? | Conditional aggregation, `SUM(CASE WHEN ...)`, `COUNT`, `JOIN` |
-| `queries/unit4/q4_2.sql` — 4.2B | How do playback failures compare between subscription tiers, and what are the platform-wide totals? | `GROUPING SETS`, `GROUPING`, conditional aggregation |
-| `queries/unit4/q4_2.sql` — 4.2C | What is the combined failure-rate baseline for high-volume producers with at least five playback events? | Common Table Expressions (`WITH`), `GROUP BY`, aggregate filtering, `SUM` |
+| Query | Business Question |
+|---|---|
+| `queries/unit4/q4_1.sql` — 4.1.1 | How many playback events occurred, what are the total, average, minimum, and maximum playback durations, and how many unique listeners participated? |
+| `queries/unit4/q4_1.sql` — 4.1.1 Data Quality | How many playback events are missing duration information? |
+| `queries/unit4/q4_1.sql` — 4.1.2 | Which producers generate the most playback events, and how does average listening duration vary across producers? |
+| `queries/unit4/q4_1.sql` — 4.1.3 | Which producers have at least five playback events, providing a minimum volume for performance comparisons? |
+| `queries/unit4/q4_1.sql` — 4.1.4 | How does playback activity and average listening duration vary across producers and subscription tiers? |
+| `queries/unit4/q4_2.sql` — 4.2A | How many total playback events and failed playback events does each producer generate? |
+| `queries/unit4/q4_2.sql` — 4.2B | How do playback failures compare between subscription tiers, and what are the platform-wide totals? |
+| `queries/unit4/q4_2.sql` — 4.2C | What is the combined failure-rate baseline for high-volume producers with at least five playback events? |
 
 #### Analysis and Findings
 
