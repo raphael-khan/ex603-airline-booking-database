@@ -1,6 +1,6 @@
 -- Task 4.2A: Conditional aggregation by producer
 -- Question: How many playback events and failures does each song have?
--- A failure is a known play duration below 50% of the song length.
+-- A failure threshold is play duration below 50% of the song length.
 SELECT p.track_id AS producer_id,
        COUNT(*) AS total_events,
        SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END) AS failed_events,
