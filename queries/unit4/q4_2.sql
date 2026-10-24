@@ -15,6 +15,7 @@ ORDER BY failed_events DESC, total_events DESC, producer_id;
 -- Task 4.2B: Group subtotals and platform grand total
 -- Question: How many plays and failures occur in each subscription tier and platform-wide?
 -- Subscription tier substitutes for Region.
+-- Note: The free and premium rows are subtotals, and ALL TIERS is the platform grand total.
 SELECT CASE WHEN GROUPING(l.subscription_tier) = 1 THEN 'ALL TIERS' ELSE l.subscription_tier END AS subscription_group,
        COUNT(*) AS total_events,
        SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END) AS failed_events,
