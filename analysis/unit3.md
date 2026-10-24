@@ -1,4 +1,4 @@
-# Unit 3 — Dashboard Audit Findings
+# Unit 3 Findings — Dashboard Audit Findings
 
 **To:** Dashboard Team  
 **Subject:** Booking Failure Rate Investigation and Payout Recommendation
