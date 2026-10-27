@@ -1,48 +1,287 @@
--- Task 4.2A: Conditional aggregation by producer
--- Question: How many playback events and failures does each song have?
--- A failure threshold is play duration below 50% of the song length.
-SELECT p.track_id AS producer_id,
-       COUNT(*) AS total_events,
-       SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END) AS failed_events,
-       SUM(CASE WHEN p.play_duration_seconds IS NULL THEN 1 ELSE 0 END) AS unknown_events,
-       ROUND(100.0 * SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END)
-             / NULLIF(COUNT(p.play_duration_seconds), 0), 2) AS observed_failure_rate_pct
-FROM plays p
-JOIN songs s ON p.track_id = s.song_id
-GROUP BY p.track_id
-ORDER BY failed_events DESC, total_events DESC, producer_id;
 
--- Task 4.2B: Group subtotals and platform grand total
--- Question: How many plays and failures occur in each subscription tier and platform-wide?
--- Subscription tier substitutes for Region.
--- Note: The free and premium rows are subtotals, and ALL TIERS is the platform grand total.
-SELECT CASE WHEN GROUPING(l.subscription_tier) = 1 THEN 'ALL TIERS' ELSE l.subscription_tier END AS subscription_group,
-       COUNT(*) AS total_events,
-       SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END) AS failed_events,
-       SUM(CASE WHEN p.play_duration_seconds IS NULL THEN 1 ELSE 0 END) AS unknown_events,
-       ROUND(100.0 * SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END)
-             / NULLIF(COUNT(p.play_duration_seconds), 0), 2) AS observed_failure_rate_pct
-FROM plays p
-JOIN songs s ON p.track_id = s.song_id
-JOIN listeners l ON p.user_id = l.account_id
-GROUP BY GROUPING SETS ((l.subscription_tier), ())
-ORDER BY GROUPING(l.subscription_tier), l.subscription_tier;
+-- ============================================================
+-- EX603 | Unit 4 | Task 4.2: Build the Breakdown
+-- Theme: Airline Booking
+--
+-- Failure definition:
+-- booking_status = 'cancelled'
+-- AND cancellation_reason = 'Passenger no show'
+--
+-- Producer: flight_id
+-- Region: flights.origin_country
+-- High-volume threshold: 15 bookings
+-- ============================================================
 
--- Task 4.2C: Two-step high-volume producer baseline
--- Question: What is the combined observed failure rate among songs with at least five plays?
-WITH producer_performance AS (
-    SELECT p.track_id AS producer_id,
-           COUNT(*) AS total_events,
-           COUNT(p.play_duration_seconds) AS known_events,
-           SUM(CASE WHEN p.play_duration_seconds < s.duration_seconds * 0.50 THEN 1 ELSE 0 END) AS failed_events
-    FROM plays p
-    JOIN songs s ON p.track_id = s.song_id
-    GROUP BY p.track_id
+
+-- ------------------------------------------------------------
+-- Part A: Two numbers in one pass
+-- Requirement: CASE inside an aggregate
+--
+-- Business question:
+-- How many total bookings and passenger no-shows did each
+-- flight generate?
+--
+-- No WHERE clause filters the event population.
+-- ------------------------------------------------------------
+
+SELECT
+    flight_id AS producer_id,
+    COUNT(*) AS total_events,
+    SUM(
+        CASE
+            WHEN booking_status = 'cancelled'
+             AND cancellation_reason = 'Passenger no show'
+            THEN 1
+            ELSE 0
+        END
+    ) AS failed_events,
+    ROUND(
+        100.0 * SUM(
+            CASE
+                WHEN booking_status = 'cancelled'
+                 AND cancellation_reason = 'Passenger no show'
+                THEN 1
+                ELSE 0
+            END
+        ) / NULLIF(COUNT(*), 0),
+        2
+    ) AS failure_rate_pct
+FROM bookings
+GROUP BY flight_id
+ORDER BY
+    failed_events DESC,
+    failure_rate_pct DESC,
+    producer_id;
+
+
+-- ------------------------------------------------------------
+-- Part B: Regional subtotals and platform grand total
+-- Requirement: GROUPING SETS without flight-level detail
+--
+-- Business question:
+-- How many bookings and passenger no-shows occurred in
+-- each flight origin region and across the entire platform?
+-- ============================================================
+-- EX603 | Unit 4 | Task 4.2: Build the Breakdown
+-- Theme: Airline Booking
+--
+-- Failure definition:
+-- booking_status = 'cancelled'
+-- AND cancellation_reason = 'Passenger no show'
+--
+-- Producer: flight_id
+-- Region: flights.origin_country
+-- High-volume threshold: 15 bookings
+-- ============================================================
+
+
+-- ------------------------------------------------------------
+-- Part A: Two numbers in one pass
+-- Requirement: CASE inside an aggregate
+--
+-- Business question:
+-- How many total bookings and passenger no-shows did each
+-- flight generate?
+--
+-- No WHERE clause filters the event population.
+-- ------------------------------------------------------------
+
+SELECT
+    flight_id AS producer_id,
+    COUNT(*) AS total_events,
+    SUM(
+        CASE
+            WHEN booking_status = 'cancelled'
+             AND cancellation_reason = 'Passenger no show'
+            THEN 1
+            ELSE 0
+        END
+    ) AS failed_events,
+    ROUND(
+        100.0 * SUM(
+            CASE
+                WHEN booking_status = 'cancelled'
+                 AND cancellation_reason = 'Passenger no show'
+                THEN 1
+                ELSE 0
+            END
+        ) / NULLIF(COUNT(*), 0),
+        2
+    ) AS failure_rate_pct
+FROM bookings
+GROUP BY flight_id
+ORDER BY
+    failed_events DESC,
+    failure_rate_pct DESC,
+    producer_id;
+
+
+-- ------------------------------------------------------------
+-- Part B: Regional subtotals and platform grand total
+-- Requirement: GROUPING SETS without flight-level detail
+--
+-- Business question:
+-- How many bookings and passenger no-shows occurred in
+-- each flight origin region and across the entire platform?
+--
+-- Regional rows = subtotals
+-- ALL REGIONS row = platform grand total
+-- ------------------------------------------------------------
+
+SELECT
+    CASE
+        WHEN GROUPING(f.origin_country) = 1
+        THEN 'ALL REGIONS'
+        ELSE f.origin_country
+    END AS region,
+    COUNT(*) AS total_events,
+    SUM(
+        CASE
+            WHEN b.booking_status = 'cancelled'
+             AND b.cancellation_reason = 'Passenger no show'
+            THEN 1
+            ELSE 0
+        END
+    ) AS failed_events,
+    ROUND(
+        100.0 * SUM(
+            CASE
+                WHEN b.booking_status = 'cancelled'
+                 AND b.cancellation_reason = 'Passenger no show'
+                THEN 1
+                ELSE 0
+            END
+        ) / NULLIF(COUNT(*), 0),
+        2
+    ) AS failure_rate_pct
+FROM bookings b
+JOIN flights f
+    ON b.flight_id = f.flight_id
+GROUP BY GROUPING SETS (
+    (f.origin_country),
+    ()
 )
-SELECT COUNT(*) AS high_volume_producers,
-       SUM(total_events) AS total_events,
-       SUM(known_events) AS known_events,
-       SUM(failed_events) AS failed_events,
-       ROUND(100.0 * SUM(failed_events) / NULLIF(SUM(known_events), 0), 2) AS observed_failure_rate_pct
+ORDER BY
+    GROUPING(f.origin_country),
+    f.origin_country;
+
+
+-- ------------------------------------------------------------
+-- Part C: Two-step aggregation pipeline
+-- Requirement: WITH clause and second aggregation
+--
+-- Business question:
+-- What is the booking-weighted passenger no-show rate
+-- among flights with at least 15 bookings?
+--
+-- Step 1: Summarize bookings and failures per flight.
+-- Step 2: Select high-volume flights and aggregate them
+--         into one comparison baseline.
+-- ------------------------------------------------------------
+
+WITH producer_performance AS (
+    SELECT
+        flight_id AS producer_id,
+        COUNT(*) AS total_events,
+        SUM(
+            CASE
+                WHEN booking_status = 'cancelled'
+                 AND cancellation_reason = 'Passenger no show'
+                THEN 1
+                ELSE 0
+            END
+        ) AS failed_events
+    FROM bookings
+    GROUP BY flight_id
+)
+SELECT
+    COUNT(*) AS high_volume_producers,
+    SUM(total_events) AS total_events,
+    SUM(failed_events) AS failed_events,
+    ROUND(
+        100.0 * SUM(failed_events)
+        / NULLIF(SUM(total_events), 0),
+        2
+    ) AS baseline_failure_rate_pct
 FROM producer_performance
-WHERE total_events >= 5;
+WHERE total_events >= 15;
+
+-- ------------------------------------------------------------
+
+SELECT
+    CASE
+        WHEN GROUPING(f.origin_country) = 1
+        THEN 'ALL REGIONS'
+        ELSE f.origin_country
+    END AS region,
+    COUNT(*) AS total_events,
+    SUM(
+        CASE
+            WHEN b.booking_status = 'cancelled'
+             AND b.cancellation_reason = 'Passenger no show'
+            THEN 1
+            ELSE 0
+        END
+    ) AS failed_events,
+    ROUND(
+        100.0 * SUM(
+            CASE
+                WHEN b.booking_status = 'cancelled'
+                 AND b.cancellation_reason = 'Passenger no show'
+                THEN 1
+                ELSE 0
+            END
+        ) / NULLIF(COUNT(*), 0),
+        2
+    ) AS failure_rate_pct
+FROM bookings b
+JOIN flights f
+    ON b.flight_id = f.flight_id
+GROUP BY GROUPING SETS (
+    (f.origin_country),
+    ()
+)
+ORDER BY
+    GROUPING(f.origin_country),
+    f.origin_country;
+
+
+-- ------------------------------------------------------------
+-- Part C: Two-step aggregation pipeline
+-- Requirement: WITH clause and second aggregation
+--
+-- Business question:
+-- What is the booking-weighted passenger no-show rate
+-- among flights with at least 15 bookings?
+--
+-- Step 1: Summarize bookings and failures per flight.
+-- Step 2: Select high-volume flights and aggregate them
+--         into one comparison baseline.
+-- ------------------------------------------------------------
+
+WITH producer_performance AS (
+    SELECT
+        flight_id AS producer_id,
+        COUNT(*) AS total_events,
+        SUM(
+            CASE
+                WHEN booking_status = 'cancelled'
+                 AND cancellation_reason = 'Passenger no show'
+                THEN 1
+                ELSE 0
+            END
+        ) AS failed_events
+    FROM bookings
+    GROUP BY flight_id
+)
+SELECT
+    COUNT(*) AS high_volume_producers,
+    SUM(total_events) AS total_events,
+    SUM(failed_events) AS failed_events,
+    ROUND(
+        100.0 * SUM(failed_events)
+        / NULLIF(SUM(total_events), 0),
+        2
+    ) AS baseline_failure_rate_pct
+FROM producer_performance
+WHERE total_events >= 15;
