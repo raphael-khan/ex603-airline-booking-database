@@ -13,13 +13,11 @@ The high-volume flight group has a combined passenger no-show rate of approximat
 
 ### Flights requiring investigation
 
-Flight ID | Observed no-show rate | Assessment |
-
-2 | 18.75% | High no-show rate and meaningful booking volume |
-
-3 | 15.38% | Elevated no-show rate; currently marked inactive | 
-
-4 | 16.67% | Elevated rate but a smaller sample |
+| Flight ID | Observed no-show rate | Assessment |
+| :--- | :--- | :--- |
+| 2 | 18.75% | High no-show rate and meaningful booking volume |
+| 3 | 15.38% | Elevated no-show rate; currently marked inactive |
+| 4 | 16.67% | Elevated rate but a smaller sample |
 
 I would prioritize flight IDs 2 and 3, followed by flight ID 4 as a secondary investigation.
 Flight 2 has a particularly elevated rate compared with the platform average. Flight 3 also warrants review, although its inactive status means leadership should first determine whether the issue is historical rather than ongoing.
