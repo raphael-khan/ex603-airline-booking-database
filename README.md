@@ -46,16 +46,16 @@ The schema also enforces important domain rules through database constraints. Pa
 
 #### Query Catalogue
 
-| Query | Business Question |
-|---|---|
-| `queries/unit4/q4_1.sql` — 4.1.1 | How many playback events occurred, what are the total, average, minimum, and maximum playback durations, and how many unique listeners participated? |
-| `queries/unit4/q4_1.sql` — 4.1.1 Data Quality | How many playback events are missing duration information? |
-| `queries/unit4/q4_1.sql` — 4.1.2 | Which producers generate the most playback events, and how does average listening duration vary across producers? |
-| `queries/unit4/q4_1.sql` — 4.1.3 | Which producers have at least five playback events, providing a minimum volume for performance comparisons? |
-| `queries/unit4/q4_1.sql` — 4.1.4 | How does playback activity and average listening duration vary across producers and subscription tiers? |
-| `queries/unit4/q4_2.sql` — 4.2A | How many total playback events and failed playback events does each producer generate? |
-| `queries/unit4/q4_2.sql` — 4.2B | How do playback failures compare between subscription tiers, and what are the platform-wide totals? |
-| `queries/unit4/q4_2.sql` — 4.2C | What is the combined failure-rate baseline for high-volume producers with at least five playback events? |
+| Query | Business Question | SQL Concepts |
+| ----- | ----- | ----- |
+| queries/unit4/q4_1.sql — Task 4.1A | How many bookings and unique passengers are recorded, and what are the total, average, minimum, and maximum fares? | COUNT, SUM, AVG, MIN, MAX, COUNT(DISTINCT) |
+| queries/unit4/q4_1.sql — Data Quality | How many zero-fare bookings occurred, and how many were cancellations? | COUNT, FILTER, WHERE |
+| queries/unit4/q4_1.sql — Task 4.1B | Which flights generate the most bookings, and what is their average fare? | GROUP BY, COUNT, AVG, ORDER BY |
+| queries/unit4/q4_1.sql — Task 4.1C | Which flights have at least 15 bookings? | GROUP BY, HAVING |
+| queries/unit4/q4_1.sql — Task 4.1D | How does booking activity vary by flight and origin region? | JOIN, two-dimensional GROUP BY |
+| queries/unit4/q4_2.sql — Task 4.2A | How many total bookings and passenger no-shows does each flight generate? | Conditional aggregation, SUM(CASE WHEN ...) |
+| queries/unit4/q4_2.sql — Task 4.2B | What are the passenger no-show totals and rates for each region and the entire platform? | GROUPING SETS, GROUPING |
+| queries/unit4/q4_2.sql — Task 4.2C | What is the combined no-show rate for flights with at least 15 bookings? | WITH CTE, second-stage aggregation |
 
 #### Analysis and Findings
 
