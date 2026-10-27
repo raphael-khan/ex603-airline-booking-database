@@ -5,9 +5,24 @@
 **To:** Leadership Team  
 **Subject:** Platform failure rate and producer investigation priorities
 
-Using our provisional definition of a failure—a recorded playback lasting less than 50% of the song's full duration—the platform's observed failure rate is **29.05% (61 failures among 210 plays with recorded durations)**. 
-There are **226 playback events** in total, but **16 have no recorded duration** and cannot reliably be classified as successes or failures. This is a short-playback measure, not proof of a technical streaming error; the definition should be revisited when the instructor confirms the intended business rule.
+### Passenger no-show performance
 
-Among producers with at least five total playback events, the combined observed failure rate is **28.88% (54 failures among 187 plays with known durations)**. Performance varies considerably. 
-I recommend investigating **producer 310** first: it recorded **8 failures in 20 known plays (40.00%)**, the highest failure count of any producer. Next, **producer 320** recorded **6 failures in 18 known plays (33.33%)** and has substantial activity. **Producer 317** recorded **3 failures in 7 known plays (42.86%)**, but its smaller sample means the rate should be treated cautiously. Producer 322 has a 75% rate, but only four plays; it should be monitored rather than treated as a confirmed outlier. 
-The next investigation should check whether short plays reflect listener choices, playback interruptions, or measurement problems, and should examine additional.
+The corrected Airline Booking analysis identifies 12 passenger no-shows across 200 booking events, producing a platform-wide passenger no-show rate of 6.00%.
+This is the observed rate for the entire supplied booking dataset. It is not a general cancellation rate: cancellations caused by payment failures, flight cancellations, or passenger-initiated cancellations are not counted as passenger no-shows.
+The high-volume flight group has a combined passenger no-show rate of approximately 4.83%, indicating that the overall platform rate is influenced partly by differences in activity and outcomes across flights.
+
+### Flights requiring investigation
+
+Flight ID | Observed no-show rate | Assessment
+
+2 | 18.75% | High no-show rate and meaningful booking volume
+
+3 | 15.38% | Elevated no-show rate; currently marked inactive
+
+4 | 16.67% | Elevated rate but a smaller sample
+
+I would prioritize flight IDs 2 and 3, followed by flight ID 4 as a secondary investigation.
+Flight 2 has a particularly elevated rate compared with the platform average. Flight 3 also warrants review, although its inactive status means leadership should first determine whether the issue is historical rather than ongoing.
+Flight 4 has a high percentage, but its smaller number of bookings makes the estimate less stable. Additional booking history would help determine whether its rate reflects a recurring problem.
+
+I recommend leadership should investigate the booking and check-in processes associated with the identified flights, including passenger communications, reminder procedures, and patterns in booking cancellations.The 6.00% platform figure should replace any misleading dashboard claim that approximately half of bookings are failures. The data supports a more targeted investigation of particular flights rather than assuming a platform-wide breakdown.
