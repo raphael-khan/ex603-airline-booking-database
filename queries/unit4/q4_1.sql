@@ -1,48 +1,118 @@
--- Task 4.1.1: Platform-wide playback summary
--- Question: How many plays occurred, how much listening time was recorded,
--- and how many distinct listeners participated?
-SELECT COUNT(*) AS total_events,
-       SUM(play_duration_seconds) AS total_play_seconds,
-       ROUND(AVG(play_duration_seconds), 2) AS avg_play_seconds,
-       MIN(plays.play_duration_seconds) AS min_play_seconds,
-       MAX(play_duration_seconds) AS max_play_seconds,
-       COUNT(DISTINCT user_id) AS unique_listeners
-FROM plays;
 
--- Task 4.1.1: Check completeness of playback durations
--- Question: How many playback events have missing duration measurements?
-SELECT COUNT(*) AS total_events,
-       COUNT(play_duration_seconds) AS recorded_durations,
-       COUNT(*) - COUNT(play_duration_seconds) AS missing_durations
-FROM plays;
+-- ============================================================
+-- EX603 | Unit 4 | Task 4.1: Measure the Platform
+-- Theme: Airline Booking
+--
+-- Event table: bookings
+-- Producer: flights.flight_id
+-- Actor: passengers.passenger_id
+-- Region: flights.origin_country
+-- Theme metric: bookings.fare_paid
+--
+-- Scope: All booking events, including bookings for inactive
+-- flights. This provides a platform-wide baseline.
+-- ============================================================
 
--- Task 4.1.2: Playback metrics by producer
--- Question: Which songs receive the most plays, and how long are they played on average?
-SELECT track_id AS producer_id,
-       COUNT(*) AS total_events,
-       ROUND(AVG(play_duration_seconds), 2) AS avg_play_seconds
-FROM plays
-GROUP BY track_id
-ORDER BY total_events DESC, producer_id;
 
--- Task 4.1.3: Producers with at least five events
--- Question: Which songs have at least five plays and what is their average play duration?
-SELECT track_id AS producer_id,
-       COUNT(*) AS total_events,
-       ROUND(AVG(play_duration_seconds), 2) AS avg_play_seconds
-FROM plays
-GROUP BY track_id
-HAVING COUNT(*) >= 5
-ORDER BY total_events DESC, producer_id;
+-- ------------------------------------------------------------
+-- Task 4.1A: Platform-wide aggregate summary
+-- Requirement: COUNT, SUM, AVG, MIN, MAX, COUNT(DISTINCT)
+--
+-- Business question:
+-- How many bookings occurred, how much fare revenue was
+-- recorded, what was the fare distribution, and how many
+-- unique passengers made bookings?
+-- ------------------------------------------------------------
 
--- Task 4.1.4: Two-dimensional aggregation (provisional alternative)
--- Question: How does playback activity vary by song and subscription tier?
-SELECT p.track_id AS producer_id,
-       l.subscription_tier,
-       COUNT(*) AS total_events,
-       ROUND(AVG(p.play_duration_seconds), 2) AS avg_play_seconds,
-       COUNT(*) FILTER (WHERE p.play_duration_seconds IS NULL) AS missing_durations
-FROM plays p
-JOIN listeners l ON p.user_id = l.account_id
-GROUP BY p.track_id, l.subscription_tier
-ORDER BY producer_id, l.subscription_tier;
+SELECT
+    COUNT(*) AS total_bookings,
+    ROUND(SUM(fare_paid), 2) AS total_fare_paid,
+    ROUND(AVG(fare_paid), 2) AS avg_fare_paid,
+    MIN(fare_paid) AS min_fare_paid,
+    MAX(fare_paid) AS max_fare_paid,
+    COUNT(DISTINCT passenger_id) AS unique_passengers
+FROM bookings;
+
+
+-- ------------------------------------------------------------
+-- Task 4.1A: Data-quality follow-up
+--
+-- Business question:
+-- How many bookings have a zero fare, and how many of those
+-- bookings were cancelled?
+-- ------------------------------------------------------------
+
+SELECT
+    COUNT(*) AS zero_fare_bookings,
+    COUNT(*) FILTER (
+        WHERE booking_status = 'cancelled'
+    ) AS cancelled_zero_fare_bookings
+FROM bookings
+WHERE fare_paid = 0;
+
+
+-- ------------------------------------------------------------
+-- Task 4.1B: Per-producer aggregation
+-- Requirement: GROUP BY with descending event count
+--
+-- Business question:
+-- Which flights generated the most bookings, and what was
+-- the average fare paid for each flight?
+-- ------------------------------------------------------------
+
+SELECT
+    flight_id AS producer_id,
+    COUNT(*) AS total_bookings,
+    ROUND(AVG(fare_paid), 2) AS avg_fare_paid
+FROM bookings
+GROUP BY flight_id
+ORDER BY total_bookings DESC, producer_id;
+
+
+-- ------------------------------------------------------------
+-- Task 4.1C: High-volume producer filter
+-- Requirement: HAVING
+--
+-- Business question:
+-- Which flights generated at least 15 bookings, and what
+-- was their average fare?
+--
+-- Rationale:
+-- Fifteen bookings is a practical threshold for separating
+-- relatively high-volume flights from smaller groups.
+-- ------------------------------------------------------------
+
+SELECT
+    flight_id AS producer_id,
+    COUNT(*) AS total_bookings,
+    ROUND(AVG(fare_paid), 2) AS avg_fare_paid
+FROM bookings
+GROUP BY flight_id
+HAVING COUNT(*) >= 15
+ORDER BY total_bookings DESC, producer_id;
+
+
+-- ------------------------------------------------------------
+-- Task 4.1D: Two-dimensional grouping
+-- Requirement: Group by producer and region
+--
+-- Business question:
+-- How does booking volume and average fare vary by flight
+-- and flight origin country?
+-- ------------------------------------------------------------
+
+SELECT
+    b.flight_id AS producer_id,
+    f.origin_country AS region,
+    COUNT(*) AS total_bookings,
+    ROUND(AVG(b.fare_paid), 2) AS avg_fare_paid
+FROM bookings b
+JOIN flights f
+    ON b.flight_id = f.flight_id
+GROUP BY
+    b.flight_id,
+    f.origin_country
+ORDER BY
+    region,
+    total_bookings DESC,
+    producer_id;
