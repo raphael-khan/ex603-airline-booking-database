@@ -1,15 +1,15 @@
 # Unit 4 Findings — From Rows to Insight
 
-Theme: Airline Booking
-Dataset: airline.sql
-Event table: bookings
-Producer: flights.flight_id
-Actor: passengers.passenger_id
-Region: flights.origin_country
+- Theme: Airline Booking
+- Dataset: airline.sql
+- Event table: bookings
+- Producer: flights.flight_id
+- Actor: passengers.passenger_id
+- Region: flights.origin_country
 
 ## Task 4.1: Measure the Platform
 
-Platform-wide summary
+### Platform-wide summary
 
 The dataset contains 200 booking events associated with 30 unique passengers. I used aggregate functions to examine total fare revenue, average fare, minimum and maximum fares, and booking volume.
 
