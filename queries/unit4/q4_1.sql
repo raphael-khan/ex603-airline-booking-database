@@ -8,9 +8,6 @@
 -- Actor: passengers.passenger_id
 -- Region: flights.origin_country
 -- Theme metric: bookings.fare_paid
---
--- Scope: All booking events, including bookings for inactive
--- flights. This provides a platform-wide baseline.
 -- ============================================================
 
 
@@ -76,10 +73,6 @@ ORDER BY total_bookings DESC, producer_id;
 -- Business question:
 -- Which flights generated at least 15 bookings, and what
 -- was their average fare?
---
--- Rationale:
--- Fifteen bookings is a practical threshold for separating
--- relatively high-volume flights from smaller groups.
 -- ------------------------------------------------------------
 
 SELECT
