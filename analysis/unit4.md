@@ -1,25 +1,88 @@
 # Unit 4 Findings — From Rows to Insight
 
+Theme: Airline Booking
+Dataset: airline.sql
+Event table: bookings
+Producer: flights.flight_id
+Actor: passengers.passenger_id
+Region: flights.origin_country
+
 ## Task 4.1: Measure the Platform
 
-The music-streaming dataset contains 226 playback events involving eight distinct listeners. Of these, 210 events have recorded playback durations, totaling 35,430 seconds. The average recorded duration is 168.71 seconds, with a minimum of 3 seconds and a maximum of 368 seconds. The remaining 16 events (7.08%) have missing duration measurements and are excluded from duration-based averages, although they still count as playback events. These missing values and unusually short plays merit defining a playback failure rate.
+Platform-wide summary
 
-The per-producer breakdown identifies each song by its `track_id` and reports its event count and average recorded playback duration. The five-event minimum used in the `HAVING` query is an exploratory screening threshold suited to the small sample, not proof that a song's performance rate is statistically reliable. Sixteen of the 24 songs with recorded plays meet that threshold.
+The dataset contains 200 booking events associated with 30 unique passengers. I used aggregate functions to examine total fare revenue, average fare, minimum and maximum fares, and booking volume.
 
-Aggregates hide important differences. An average listening duration conceals whether most listeners finish a song or whether a mix of very short and complete plays produces the same average. A play count conceals whether events came from many distinct listeners or repeated activity by a few.
+One important observation is that the minimum fare is $0.00. This does not automatically indicate a data-quality error because cancelled bookings can legitimately have zero recorded fare. A separate query checks how many zero-fare bookings are cancelled so that these values are interpreted correctly rather than excluded without justification.
+
+The average fare also needs context. It includes all booking records, including cancellations, and therefore should not be interpreted as the average amount paid for completed bookings.
+
+Per-producer breakdown
+
+Grouping by flight_id shows how booking activity varies across flights. The event count identifies which flights generate the greatest booking volume, while the average fare provides an additional measure of their financial activity.
+
+The airline's operations manager or revenue management analyst could use this breakdown to identify high-demand flights, evaluate pricing patterns, and determine which flights deserve closer investigation.
+
+However, average fare and booking count do not reveal the full distribution of fares or explain why bookings were cancelled. A flight with a high average fare may still have a significant number of zero-fare cancellations. Aggregate results can also hide whether bookings come from many passengers or repeated activity by a smaller group.
+
+HAVING threshold
+
+I used HAVING COUNT(*) >= 15 to identify relatively high-volume flights. This threshold reduces the influence of flights with very small booking counts and creates a more meaningful group for comparing performance.
+
+The threshold is an analytical choice rather than a business rule. A smaller flight may still have an important operational issue even if it does not meet the volume requirement.
+
+Two-dimensional grouping
+
+I grouped bookings by flight identifier and flight origin country using flights.origin_country.
+
+This allows the report to connect individual flight performance to a geographic region. The geographic attribute comes directly from the flights table, so no substitute regional mapping is necessary.
+
+Because each flight has one recorded origin country, this grouping does not split a single flight across multiple regions. It identifies the origin region associated with each flight.
 
 ## Task 4.2: Build the Breakdown Leadership Asked For
 
-**Part A — Conditional aggregation.** The producer-level query answers two questions side by side: How many playback events occurred for each song, and how many of those events were classified as failures? For this exploratory analysis, a failure means a recorded playback duration shorter than 50% of the song's duration. Missing playback durations are counted separately as unknown outcomes rather than treated as successes or failures. A content operations manager should review songs with unusually high failure counts alongside their observed failure rates and event volumes.
+**Part A** 
 
-**Part B — Subtotals and grand total.** A regional director would normally use geographic subtotals to identify where intervention is needed. The supplied music-streaming schema has no region field, so the query provides subscription-tier subtotals instead: one row for free listeners, one for premium listeners, and a platform-wide grand total labeled ALL TIERS. The tier rows support targeted investigation of listener segments; the grand total supports a platform-wide decision about whether playback abandonment warrants broader investigation. These are not geographic findings.
+Conditional aggregation answers two business questions side by side:
 
-**Part C — Two-step baseline.** The CTE pipeline answers: Across songs with at least five playback events, what proportion of plays with recorded durations ended before half the song had played? It first aggregates counts by song, then combines only the qualifying songs to produce an event-weighted failure-rate baseline. Five events is an exploratory cutoff for this small dataset, not a statistically validated reliability threshold. The baseline should be interpreted alongside unknown outcomes, sample sizes, and the distribution of producer-level rates. The 50% failure definition and tier-as-region substitution remain provisional pending instructor clarification.
+How many total booking events did each flight generate?
 
-## Reflection — Conditional aggregation versus separate queries
+How many of those bookings were cancelled because of a passenger no-show?
 
-Conditional aggregation allows us to calculate total playback events and failed playback events together while examining the same set of records. For example, one grouped summary can count every play for each producer and, at the same time, count only plays that meet the failure definition. This keeps both numbers aligned to the same population and makes it easier to calculate meaningful failure rates. It also lets us report missing durations separately without accidentally removing those events from the overall count.
+Using COUNT(*) alongside SUM(CASE WHEN ... THEN 1 ELSE 0 END) produces both totals in the same grouped result.
 
-An alternative would be to run one filtered query for all events and a second filtered query for failed events, then combine the results. Although this can produce the same answer, it creates extra work and more opportunities for inconsistencies. A producer with no failures might be absent from the failure-only result, requiring additional care when combining the two outputs. Separate queries can also observe different data if new events arrive between executions.
+This makes it possible to calculate each flight's no-show rate without excluding successful bookings from the denominator. The query also identifies flights with zero failures, which could disappear from a separate failure-only query.
 
-At one million rows, reducing repeated scans and avoiding extra result-merging steps can materially improve performance, especially when the analysis is refreshed frequently. Actual speed depends on indexes and the database's execution plan, so one query is not automatically faster in every situation. The main benefit is producing consistent, auditable metrics in a single grouped analysis.
+For this analysis, a failure is specifically defined as a booking with status cancelled and cancellation reason Passenger no show. Other cancellation reasons are not classified as passenger no-show failures.
+
+**Part B** 
+The regional director needs summarized results by flight origin country rather than a long list of individual flights.
+
+The GROUPING SETS query produces one subtotal for each origin country and a single platform-wide grand total. The country rows are regional subtotals, while the row labeled ALL REGIONS represents all bookings across the platform.
+
+Regional subtotals help the director compare geographic performance and decide where targeted operational improvements may be needed.
+
+The grand total supports a different decision: whether passenger no-shows are sufficiently widespread to justify a platform-wide intervention. Regional rows alone cannot communicate the complete platform rate as directly.
+
+**Part C** 
+The CTE pipeline answers the question:
+
+What is the combined passenger no-show rate for high-volume flights with at least 15 bookings?
+
+The first step summarizes total bookings and passenger no-shows for each flight.
+
+The second step selects flights meeting the 15-booking threshold and aggregates their totals into a common performance baseline.
+
+This produces a booking-weighted failure rate. Flights with more bookings contribute proportionally more to the baseline than flights with fewer bookings.
+
+The baseline can be used to compare individual high-volume flights against the broader high-volume group.
+
+## Reflection
+
+Conditional aggregation allows us to calculate total bookings and passenger no-shows together while examining the same group of booking records. Using COUNT(*) and SUM(CASE WHEN ...) in one query gives each flight both its total activity and its failure count. This makes the results easier to compare and ensures that the no-show rate uses the correct denominator.
+
+An alternative would be to run one filtered query to count all bookings and another to count only passenger no-shows. Although both approaches can produce the same results, separate queries require additional work to combine the outputs. They can also create complications when a flight has no failures because that flight may be missing from the failure-only results. The developer must account for these missing groups to avoid incorrect comparisons.
+
+At one million booking records, repeated table scans and additional merging operations can increase processing time and resource consumption. Conditional aggregation can reduce unnecessary work by calculating related metrics during the same grouped analysis. It also makes the logic easier to review because the numerator and denominator are defined together.
+
+However, performance depends on indexes, the query optimizer, and the execution plan. A single query is not automatically faster in every situation. Its strongest advantages are consistency, clarity, and easier maintenance as the dataset grows.
