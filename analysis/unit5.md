@@ -10,12 +10,7 @@ This report would help operations staff review booking activity, investigate pas
 
 ### Question 2: Why is the junction table important?
 
-The `flight_routes` junction table is important because flights and airports have a many-to-many relationship. 
+The `flight_routes` junction table is important because flights and airports have a many-to-many relationship. A flight can be associated with multiple airports, and an airport can serve multiple flights. The junction table stores these relationships using `flight_id` and `airport_id`. By joining `flights` to `flight_routes` and then to `airports`, we can identify the airports associated with each flight. Without the junction table, the database would need to store airport information directly in the flight records or use repeated columns for multiple airports. This would make the design less flexible and complicate queries when flights serve different numbers of airports. 
 
-A flight can be associated with multiple airports, and an airport can serve multiple flights.
-
-The junction table stores these relationships using `flight_id` and `airport_id`. By joining `flights` to `flight_routes` and then to `airports`, we can identify the airports associated with each flight.
-
-Without the junction table, the database would need to store airport information directly in the flight records or use repeated columns for multiple airports. This would make the design less flexible and complicate queries when flights serve different numbers of airports.
-
-The junction table also allows us to investigate whether flights with elevated passenger no-show rates share airport associations. However, a shared airport does not necessarily explain the higher failure rate; further operational data would be needed to establish a cause.
+The junction table also allows us to investigate whether flights with elevated passenger no-show rates share airport associations. 
+However, a shared airport does not necessarily explain the higher failure rate; further operational data would be needed to establish a cause.
