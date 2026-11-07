@@ -1,4 +1,4 @@
-# EX603 — Unit 5: Connecting the Tables
+# Unit 5: Connecting the Tables
 
 ## Task 5.1 — Connect Producers to Their Data
 
@@ -148,3 +148,18 @@ In this case, the query executes efficiently, completing in 0.401 ms. The plan s
 As the database grows, developers can compare execution plans to identify changes in scan methods, join strategies, row estimates, and sorting costs. These observations can guide decisions about indexing, filtering, and query optimization.
 
 A different join algorithm might become more appropriate if the tables grow, the distribution of bookings changes, or new indexes are introduced. For example, a Merge Join could become attractive when both inputs are sorted by the join key, while an indexed Nested Loop could be effective for queries returning only a small number of bookings.
+
+## Task 5.4 — Reflection
+
+In Task 5.3, PostgreSQL selected a Hash Join between `bookings` and `passengers`, followed by a Nested Loop to connect the results to `flights`. The execution plan also showed an index scan on `flights_pkey` and a Memoize cache that avoided repeated flight lookups.
+
+These choices worked well for the current dataset, which contains 200 bookings, 30 passengers, and 15 flights. The query completed in 0.401 ms.
+
+If the bookings table grew to millions of records, PostgreSQL might choose a different strategy because processing and joining more rows would increase the cost of repeated lookups. A Hash Join could become more attractive for connecting larger tables when enough memory is available. However, a larger passenger table could also increase the memory required to build the hash table.
+
+Indexes could also influence the optimizer. For example, adding indexes on frequently joined foreign keys might make indexed Nested Loops more efficient for queries that retrieve a small number of bookings. If both inputs were already ordered by their join keys, a Merge Join might become competitive.
+
+The number of matching records also matters. The current Memoize operation recorded 187 cache hits and 13 misses. If bookings referenced many more distinct flights, the cache could become less effective.
+
+Overall, execution plans help developers understand how changes in data volume, indexes, and record distribution affect query performance. Rather than assuming one join algorithm is always best, I would compare actual execution plans and timings as the platform grows.
+
