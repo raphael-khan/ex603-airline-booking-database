@@ -1,70 +1,152 @@
-# EX603-Airline-Booking-database-model
-A relational database model for an airline booking system, capturing passengers, flights, airports, and the bookings and routes that connect them. 
+# Airline Booking Database & SQL Analytics
 
-## Theme
-Airline Booking - This project models the core data behind an airline booking platform—the type of system that supports workflows such as searching for flights, viewing flight routes, and booking flights. 
-The model focuses on passenger, flight, airport, booking, and the relationships between flight and the airport they serve.
+**A PostgreSQL portfolio project that models airline bookings and analyzes booking volume, passenger no-shows, fares, and operational trends using SQL.**
 
-## The domain
-The platform represents passengers who book flights and flights that operate between airports. 
-Passengers can make multiple bookings, while each booking is associated with one passenger and one flight. 
-The booking records also capture when the booking was made and the fare paid, allowing the system to track both the transaction and its associated flight.
+## Project overview and domain
 
-Flights are associated with airports through defined flight routes. 
-Each airport associated with a flight is assigned a role, such as DEPARTURE or ARRIVAL. 
-Flight data also includes whether a flight is currently active and its scheduled duration. 
-Airport information includes the airport's name, city, and country, providing descriptive information about the locations served by each flight.
+An airline booking platform connects passengers, flights, airports, and bookings. In the initial modeling phase (Units 1–2), I designed a relational schema to represent passenger reservations and the airports associated with each flight. This work focused on entities, relationships, primary and foreign keys, and constraints that protect data integrity.
 
-The database must be able to answer questions such as:
+In the analytics phase (Units 3–6), I worked with an **instructor-provided airline booking dataset** (`airline.sql`). I used SQL to answer questions that matter to an airline operations team: Which flights attract the most bookings? Which have disproportionately high passenger no-show rates? Are cancellations improving month by month? Are some flights marked active despite having no recorded bookings? How can analysts distinguish a change in booking activity from a gap in the underlying data?
 
-- Which flights has a given passenger booked, and what did they pay?
-- Which passengers have booked a particular flight?
-- What airports are associated with a given flight, and what role does each airport serve?
-- What is the departure and arrival airport for a given flight?
-- Is a given flight currently active, and how long is its duration?
-- Which airports are served by active flights?
+The project follows a progression from row-level data validation and aggregation through joins, execution-plan analysis, and window functions. The final objective is not simply to produce query results, but to translate those results into operational recommendations, while explaining the limits of the evidence.
 
-## Schema
-The relational schema consists of five tables:
+## Database overview
 
-- `PASSENGER` — stores passenger information, including a unique passenger ID, name, email, date of birth, gender, and nationality.
-- `FLIGHT` — stores flight information, including a unique flight ID, flight name, active status, and duration in minutes.
-- `AIRPORT` — stores airport information using a three-character airport code as its primary key, along with the airport name, city, and country.
-- `BOOKING` — records the relationship between a passenger and a flight, including when the booking was created and the fare paid.
-- `FLIGHT_ROUTE` — associates flights with airports and identifies each airport's role as either `DEPARTURE` or `ARRIVAL`.
+### Original relational design (Units 1–2)
 
-Several design decisions are reflected in the schema. `PASSENGER`, `FLIGHT`, and `BOOKING` use generated integer identifiers as surrogate primary keys, while `AIRPORT` uses its three-character airport code as a natural key. `FLIGHT_ROUTE` uses the composite primary key `(flight_id, airport_id)` because each row represents the association between a specific flight and airport.
+The initial ERD models five core entities: `PASSENGER`, `FLIGHT`, `AIRPORT`, `BOOKING`, and `FLIGHT_ROUTE`. `BOOKING` connects a passenger to a flight; `FLIGHT_ROUTE` associates a flight with airports and their departure/arrival roles. Keys, foreign-key constraints, and domain checks support referential integrity.
 
-Foreign keys enforce the relationships between the tables. Historical booking information is protected by restricting the deletion of passengers or flights that are still referenced by bookings. Airport deletion is similarly restricted while an airport is referenced by a flight route. In contrast, deleting a flight cascades to its dependent `FLIGHT_ROUTE` records because those associations have no meaning without the flight.
+![Original passenger booking ERD](https://github.com/user-attachments/assets/0e47190f-8a0f-4c9a-83f7-32b32762a644)
 
-The schema also enforces important domain rules through database constraints. Passenger email addresses must be unique, flight durations must be greater than zero, booking fares cannot be negative, and an airport's role within a flight route must be either `DEPARTURE` or `ARRIVAL`. Flights can be marked inactive rather than deleted, allowing historical booking records to remain intact.
+> **Important distinction:** This ERD illustrates my initial modeling exercise. The supplied `airline.sql` schema used for Units 3–6 is **not identical**: it includes additional attributes and tables, and its `flight_routes` table does not store departure/arrival roles. The analytical queries below use the supplied schema, not the original ERD.
 
-## ERD
-<img width="4860" height="3168" alt="Passenger Booking Flow Model-2026-09-27-150745" src="https://github.com/user-attachments/assets/0e47190f-8a0f-4c9a-83f7-32b32762a644" />
+### Supplied analytical database (Units 3–6)
 
-## Unit 4 — Aggregation and Grouping: From Rows to Insight
+The Unit 3 reference DDL and seed data are contained in [`airline.sql`](airline.sql). Its main tables are:
 
-#### Query Catalogue
+| Table | Role in the analysis |
+| --- | --- |
+| `passengers` | Passenger details, including signup dates and home countries |
+| `flights` | Flight identifiers, flight numbers, origin countries, capacity, and active status |
+| `bookings` | Individual booking events, timestamps, fares, statuses, and cancellation reasons |
+| `airports` | Airport reference information |
+| `flight_routes` | Flight-to-airport associations |
+| `flight_services` | Services associated with flights |
 
-| Query | Business Question | SQL Concepts |
-| ----- | ----- | ----- |
-| queries/unit4/q4_1.sql — Task 4.1A | How many bookings and unique passengers are recorded, and what are the total, average, minimum, and maximum fares? | COUNT, SUM, AVG, MIN, MAX, COUNT(DISTINCT) |
-| queries/unit4/q4_1.sql — Data Quality | How many zero-fare bookings occurred, and how many were cancellations? | COUNT, FILTER, WHERE |
-| queries/unit4/q4_1.sql — Task 4.1B | Which flights generate the most bookings, and what is their average fare? | GROUP BY, COUNT, AVG, ORDER BY |
-| queries/unit4/q4_1.sql — Task 4.1C | Which flights have at least 15 bookings? | GROUP BY, HAVING |
-| queries/unit4/q4_1.sql — Task 4.1D | How does booking activity vary by flight and origin region? | JOIN, two-dimensional GROUP BY |
-| queries/unit4/q4_2.sql — Task 4.2A | How many total bookings and passenger no-shows does each flight generate? | Conditional aggregation, SUM(CASE WHEN ...) |
-| queries/unit4/q4_2.sql — Task 4.2B | What are the passenger no-show totals and rates for each region and the entire platform? | GROUPING SETS, GROUPING |
-| queries/unit4/q4_2.sql — Task 4.2C | What is the combined no-show rate for flights with at least 15 bookings? | WITH CTE, second-stage aggregation |
+The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. In the analytical work, an **event** means a booking, a **producer** means a flight, and the principal financial metric is `bookings.fare_paid`. A **passenger no-show** is defined narrowly as a booking with `booking_status = 'cancelled'` and `cancellation_reason = 'Passenger no show'`; it does not include every type of cancellation or dispute. The dataset does not explicitly specify a currency for fares.
 
-#### Analysis and Findings
+## Query catalogue
 
-The detailed analysis, leadership findings, and reflection are documented in [`analysis/unit4-complete.md`](analysis/unit4-complete.md).
+The following paths describe the intended repository organization. **Check that every linked file exists in the public repository before publishing this README.**
 
+### Units 1–2 — Relational modeling and DDL
 
+| Deliverable | Question addressed |
+| --- | --- |
+| Original ERD (shown above) | How should passengers, bookings, flights, airports, and routes relate? |
+| Original schema DDL (Units 1–2) | How can keys and constraints enforce those relationships? |
 
+### Unit 3 — Query fundamentals and data validation
 
+| Work | Business question |
+| --- | --- |
+| Population filtering | Which flights and bookings meet the operational eligibility criteria? |
+| NULL and three-valued logic | Could missing values cause records to be incorrectly included or excluded? |
+| Query rewrites and aliases | Can equivalent SQL formulations produce the same correct result? |
 
+*Add direct Unit 3 SQL links once their exact filenames are confirmed.*
 
+### Unit 4 — Aggregation and grouping
 
+| Query | Business question | Techniques |
+| --- | --- | --- |
+| [`q4_1.sql`](queries/unit4/q4_1.sql) | What are total bookings, unique passengers, and fare statistics? | `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` |
+| [`q4_1.sql`](queries/unit4/q4_1.sql) | Which flights have the most bookings and which meet a volume threshold? | `GROUP BY`, `HAVING` |
+| [`q4_1.sql`](queries/unit4/q4_1.sql) | How does activity vary by flight and origin country? | Joins, multidimensional grouping |
+| [`q4_2.sql`](queries/unit4/q4_2.sql) | How many passenger no-shows occur by flight? | Conditional aggregation |
+| [`q4_2.sql`](queries/unit4/q4_2.sql) | How do no-shows vary by region and platform-wide? | `GROUPING SETS` |
+| [`q4_2.sql`](queries/unit4/q4_2.sql) | Which high-volume flights warrant attention? | CTEs, second-stage aggregation |
 
+[Unit 4 findings and reflection](analysis/unit4-complete.md)
+
+### Unit 5 — Connecting tables and query performance
+
+| Query | Business question | Techniques |
+| --- | --- | --- |
+| [`q5_1.sql`](queries/unit5/q5_1.sql) | How can booking events be enriched with passenger, flight, and airport context? | Inner joins, junction joins, self-joins |
+| [`q5_2.sql`](queries/unit5/q5_2.sql) | Which flights have no bookings, and what do outer joins preserve? | Left/right/full joins, `NOT EXISTS`, `EXCEPT` |
+| [`q5_3.sql`](queries/unit5/q5_3.sql) | How does PostgreSQL execute a multi-table join, and what would a cross join produce? | `CROSS JOIN`, `EXPLAIN (ANALYZE, BUFFERS)` |
+
+[Unit 5 leadership finding](analysis/unit5-finding.md)
+
+### Unit 6 — Window functions and reporting
+
+| Query | Business question | Techniques |
+| --- | --- | --- |
+| [`q6_1.sql`](queries/unit6/q6_1.sql) | Which fares differ from their flight average, and how should flights be ranked and banded? | `AVG OVER`, `ROW_NUMBER`, `RANK`, `DENSE_RANK`, `NTILE` |
+| [`q6_2.sql`](queries/unit6/q6_2.sql) | How do consecutive fares, cumulative totals, moving averages, and activity gaps change over time? | `LAG`, `LEAD`, running `SUM`, moving `AVG` |
+| [`q6_3.sql`](queries/unit6/q6_3.sql) | What are the top three fares per flight, and how does the monthly no-show rate change? | `FIRST_VALUE`, top-N CTEs, `DATE_TRUNC`, `LAG` |
+
+[Unit 6 analysis and reflection](analysis/unit6.md) · [Final leadership memo](analysis/unit6-finding.md)
+
+## Technical highlights
+
+1. **Conditional aggregation:** Counted passenger no-shows and total bookings in the same query, producing interpretable flight-level rates without excluding non-failure events.
+2. **Joins and anti-joins:** Connected booking facts to flight and passenger dimensions, and used `NOT EXISTS` to find active flights with no booking records.
+3. **CTEs and multi-stage analysis:** Separated intermediate calculations from final filtering, particularly for high-volume flight screening and detecting gaps between booking timestamps.
+4. **Window functions:** Kept individual booking rows while adding flight averages, rankings, adjacent-event comparisons, cumulative fare totals, and month-over-month comparisons.
+5. **Query-plan inspection:** Used PostgreSQL `EXPLAIN (ANALYZE, BUFFERS)` to examine join strategy, memoization, and execution behavior rather than assuming a query's cost from its SQL syntax.
+
+## Findings and recommendations
+
+### 1. Passenger no-shows require targeted attention
+
+Across **200 bookings**, **12** were classified as passenger no-shows: a **6.00%** overall rate. Flight **2** recorded **3 no-shows out of 16 bookings (18.75%)**. Flights **3** and **4** also had elevated rates, although their samples were small. **Recommendation:** review reminders, check-in communications, and cancellation patterns for these flights before introducing broad policy changes.
+
+### 2. Active status does not guarantee booking activity
+
+Flights **14 (VN214)** and **15 (VN215)** are marked active but have **no recorded bookings** in the reference dataset. **Recommendation:** check scheduling and booking availability first, then investigate demand or pricing if the flights were genuinely available. Zero recorded bookings alone do not prove that a flight was operating without passengers.
+
+### 3. Monthly failure rates fluctuate rather than improving consistently
+
+The window-function reporting pattern compares monthly no-show rates using `LAG`. The overall annual rate is a useful baseline, but monthly percentages can shift sharply when booking counts are small. **Recommendation:** track both monthly no-show counts and rates, compare consecutive months, and investigate sustained changes rather than acting on one volatile percentage.
+
+See the [final leadership memo](analysis/unit6-finding.md) for the supporting analysis and proposed next-quarter actions.
+
+## Limitations and future improvements
+
+The reference dataset is small and represents a limited observation period. Monthly rates and flight-level comparisons can change substantially with only one or two additional no-shows, so they should not be interpreted as causal evidence or statistically reliable forecasts. The data also lacks flight-operation logs, reminder-delivery history, and booking-availability records; without those sources, a gap in bookings cannot establish whether a flight stopped operating or the data collection process missed events.
+
+A useful next step would be to join bookings with scheduled flight operations and notification records, track performance over a longer period, and compare no-show rates using sufficient sample sizes. This would make operational recommendations more defensible.
+
+## Video presentation
+
+**Presentation video:** *Link to be added after recording and uploading.*
+
+The video will walk through the business problem, selected queries from Units 3–6, the most important findings, and the recommended next-quarter actions. It will focus on analytical reasoning rather than recreating the supplied Unit 3 schema.
+
+## How to run
+
+**Requirements:** PostgreSQL with the `psql` command-line client, and the repository files. No application server is required.
+
+```bash
+# Clone the public repository
+git clone https://github.com/raphael-khan/ex603-airline-booking-database.git
+cd ex603-airline-booking-database
+
+# Create the database
+createdb ex603_data
+
+# Load the instructor-provided schema and sample records
+psql -d ex603_data -f airline.sql
+
+# Execute example analytical queries
+psql -d ex603_data -f queries/unit4/q4_1.sql
+psql -d ex603_data -f queries/unit6/q6_3.sql
+```
+
+The `airline.sql` script drops and recreates its tables, so **rerunning it resets the sample data**. Run the queries after loading the dataset. If PostgreSQL is installed on another host, supply the appropriate connection parameters to `createdb` and `psql`.
+
+## Project status
+
+SQL analyses and portfolio documentation prepared for final review. Before publishing, verify all linked files, execute the Unit 6 queries against PostgreSQL, upload the presentation video, and make sure the repository is set to **Public** in GitHub settings.
