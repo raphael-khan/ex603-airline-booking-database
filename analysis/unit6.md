@@ -77,3 +77,33 @@ If the flight was unavailable, the response might involve reviewing scheduling o
 This is important when interpreting the results. Although quartile bands can help leadership identify high- and low-activity groups, they should not be treated as strict performance categories when tied flights fall on opposite sides of a boundary.
 
 For decisions affecting individual flights, I would review the actual booking counts alongside the assigned bands.
+
+## Task 6.3 — Build the Reporting Patterns
+
+### Part A — Top Three Events per Producer
+
+I used `ROW_NUMBER()` and `FIRST_VALUE()` to identify the three highest-fare bookings for each flight. The query partitions bookings by `flight_id` and orders them by `fare_paid` in descending order.
+
+A useful platform feature would be a **flight revenue dashboard** that highlights the three highest-value bookings for each flight. This could help revenue analysts investigate unusually high fares and compare booking values within individual flights.
+
+I selected three bookings because one booking would provide too little context, while ten could make the dashboard unnecessarily crowded. Three provides a manageable comparison without overwhelming the user.
+
+I used `ROW_NUMBER()` to ensure the dashboard displays no more than three bookings per flight. When fares tie, the lower `booking_id` determines the order. This is a consistent tie-breaking rule, although it does not imply that one booking is more valuable than another when their fares are equal.
+
+The `FIRST_VALUE()` function also displays each flight's highest fare alongside the selected bookings, making it easier to compare the top three values.
+
+### Part B — Month-over-Month Performance
+
+I grouped booking records by calendar month using `DATE_TRUNC('month', booked_at)` and calculated the monthly passenger no-show rate. I then used `LAG()` to compare each month's rate with the previous month.
+
+The no-show rate is an important measure because it helps leadership understand whether booking reliability is improving or worsening over time. A lower rate suggests improvement, while a higher rate suggests deterioration.
+
+A large month-over-month increase could indicate a change in passenger behavior, ineffective reminders, or a problem with the booking or check-in process. However, it could also result from a small number of bookings, where even one additional no-show produces a large percentage change.
+
+Leadership should investigate months with unusually high rates by reviewing booking volumes, cancellation reasons, and the flights contributing to the increase. If a recurring problem is identified, the team could improve passenger reminders or check-in communications and monitor subsequent results.
+
+The query also checks for missing calendar months. This is important because `LAG()` compares the previous row, not necessarily the previous calendar month. Without checking for gaps, a missing month could cause the query to compare periods that are more than one month apart.
+
+I included missing months explicitly and assigned them a `NULL` no-show rate rather than treating a month with no bookings as having a 0% failure rate. This prevents missing activity from being incorrectly interpreted as perfect performance.
+
+Overall, this analysis provides leadership with a way to monitor booking reliability over time and identify where further investigation or operational improvements may be necessary.
