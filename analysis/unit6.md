@@ -107,3 +107,17 @@ The query also checks for missing calendar months. This is important because `LA
 I included missing months explicitly and assigned them a `NULL` no-show rate rather than treating a month with no bookings as having a 0% failure rate. This prevents missing activity from being incorrectly interpreted as perfect performance.
 
 Overall, this analysis provides leadership with a way to monitor booking reliability over time and identify where further investigation or operational improvements may be necessary.
+
+## Task 6.4 — Final Reflection
+
+Window functions were useful in this project because they allowed me to compare individual booking records with related records without removing the original rows. One reporting question that demonstrates this is: **How does each booking's fare compare with the average fare for the same flight?**
+
+In Task 6.1, I used `AVG(fare_paid) OVER (PARTITION BY flight_id)` to calculate each flight's average fare while keeping every booking in the result. The query returned 200 rows, allowing me to identify individual bookings with unusually high or low fares compared with their flight's average.
+
+Using `GROUP BY` alone would return only one average per flight, reducing the result to 13 rows. This would remove individual booking details and make it impossible to calculate each booking's difference from its flight average without an additional join or subquery.
+
+Window functions also helped with chronological analysis. In Task 6.2, `LAG()` compared consecutive bookings, while running totals and moving averages showed how fare activity developed over time.
+
+These techniques are valuable because leadership needs more than summary numbers. They need to understand which events contributed to unusual results and how performance changed.
+
+Overall, this assignment demonstrated that window functions complement traditional aggregation by preserving the detail needed for investigation while adding useful analytical context.
