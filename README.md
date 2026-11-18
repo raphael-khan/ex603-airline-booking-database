@@ -12,15 +12,14 @@ The project follows a progression from row-level data validation and aggregation
 
 ## Database overview
 
-### Original relational design (Units 1–2)
+### Relational design (Units 1–2)
 
 The initial ERD models five core entities: `PASSENGER`, `FLIGHT`, `AIRPORT`, `BOOKING`, and `FLIGHT_ROUTE`. `BOOKING` connects a passenger to a flight; `FLIGHT_ROUTE` associates a flight with airports and their departure/arrival roles. Keys, foreign-key constraints, and domain checks support referential integrity.
 
 ![Original passenger booking ERD](https://github.com/user-attachments/assets/0e47190f-8a0f-4c9a-83f7-32b32762a644)
 
-> **Important distinction:** This ERD illustrates my initial modeling exercise. The supplied `airline.sql` schema used for Units 3–6 is **not identical**: it includes additional attributes and tables, and its `flight_routes` table does not store departure/arrival roles. The analytical queries below use the supplied schema, not the original ERD.
 
-### Supplied analytical database (Units 3–6)
+### Tables overview (Units 3–6)
 
 The Unit 3 reference DDL and seed data are contained in [`airline.sql`](airline.sql). Its main tables are:
 
@@ -37,8 +36,6 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 
 ## Query catalogue
 
-The following paths describe the intended repository organization. **Check that every linked file exists in the public repository before publishing this README.**
-
 ### Units 1–2 — Relational modeling and DDL
 
 | Deliverable | Question addressed |
@@ -54,7 +51,6 @@ The following paths describe the intended repository organization. **Check that 
 | NULL and three-valued logic | Could missing values cause records to be incorrectly included or excluded? |
 | Query rewrites and aliases | Can equivalent SQL formulations produce the same correct result? |
 
-*Add direct Unit 3 SQL links once their exact filenames are confirmed.*
 
 ### Unit 4 — Aggregation and grouping
 
@@ -127,7 +123,7 @@ The video will walk through the business problem, selected queries from Units 3�
 
 ## How to run
 
-**Requirements:** PostgreSQL with the `psql` command-line client, and the repository files. No application server is required.
+**Requirements:** PostgreSQL with the `psql` command-line client, and the repository files.
 
 ```bash
 # Clone the public repository
@@ -144,9 +140,3 @@ psql -d ex603_data -f airline.sql
 psql -d ex603_data -f queries/unit4/q4_1.sql
 psql -d ex603_data -f queries/unit6/q6_3.sql
 ```
-
-The `airline.sql` script drops and recreates its tables, so **rerunning it resets the sample data**. Run the queries after loading the dataset. If PostgreSQL is installed on another host, supply the appropriate connection parameters to `createdb` and `psql`.
-
-## Project status
-
-SQL analyses and portfolio documentation prepared for final review. Before publishing, verify all linked files, execute the Unit 6 queries against PostgreSQL, upload the presentation video, and make sure the repository is set to **Public** in GitHub settings.
