@@ -48,4 +48,17 @@
 
 <br /><br />
 
+<h3>Task 6.3 A</h3>
+<img width="1654" height="1802" alt="image" src="https://github.com/user-attachments/assets/bd9fab37-68d8-418e-8d0f-43ef74ba4c78" />
 
+<br /><br />
+
+<h3>Task 6.3 B1</h3>
+<img width="2576" height="1888" alt="image" src="https://github.com/user-attachments/assets/717b6ada-5c8f-40e7-8a92-8bebd572fabc" />
+
+
+<br /><br />
+
+<h3>Task 6.3 B2</h3>
+<img width="1264" height="1440" alt="image" src="https://github.com/user-attachments/assets/a0d92749-d232-44e7-955c-7b013aa37055" />
+<br /><br />
