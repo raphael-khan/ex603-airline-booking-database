@@ -16,7 +16,7 @@ The initial ERD models five core entities: `PASSENGER`, `FLIGHT`, `AIRPORT`, `BO
 
 ![Original passenger booking ERD](https://github.com/user-attachments/assets/0e47190f-8a0f-4c9a-83f7-32b32762a644)
 
-The Unit 3 reference DDL and seed data are contained in [`airline.sql`](https://github.com/raphael-khan/ex603-airline-booking-database/blob/main/schema/airline.sql). Its main tables are:
+The Unit 3 reference DDL and seed data are contained in [`airline.sql`](schema/airline.sql). Its main tables are:
 
 | Table | Role in the analysis |
 | --- | --- |
@@ -31,19 +31,15 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 
 ## Query catalogue
 
-| Deliverable | Question addressed |
-| --- | --- |
-| Original ERD (shown above) | How should passengers, bookings, flights, airports, and routes relate? |
-| Original schema DDL (Units 1–2) | How can keys and constraints enforce those relationships? |
-
 ### Unit 3 — Query fundamentals and data validation
 
-| Work | Business question |
-| --- | --- |
-| Population filtering | Which flights and bookings meet the operational eligibility criteria? |
-| NULL and three-valued logic | Could missing values cause records to be incorrectly included or excluded? |
-| Query rewrites and aliases | Can equivalent SQL formulations produce the same correct result? |
+| Query | Business question | Techniques |
+| --- | --- | --- |
+| [`q3_1.sql`](queries/unit3/q3_1.sql) | Which flights and bookings meet the operational eligibility criteria? | Population filtering |
+| [`q3_2.sql`](queries/unit3/q3_2.sql) | Could missing values cause records to be incorrectly included or excluded? | `NULL` and three-valued logic |
+| [`q3_3.sql`](queries/unit3/q3_3.sql) | Can equivalent SQL formulations produce the same correct result? | Query rewrites and aliases |
 
+[Unit 3 findings and reflection](analysis/unit3.md)
 
 ### Unit 4 — Aggregation and grouping
 
@@ -56,7 +52,7 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 | [`q4_2.sql`](queries/unit4/q4_2.sql) | How do no-shows vary by region and platform-wide? | `GROUPING SETS` |
 | [`q4_2.sql`](queries/unit4/q4_2.sql) | Which high-volume flights warrant attention? | CTEs, second-stage aggregation |
 
-[Unit 4 findings and reflection](analysis/unit4-complete.md)
+[Unit 4 findings and reflection](analysis/unit4.md)
 
 ### Unit 5 — Connecting tables and query performance
 
@@ -66,7 +62,8 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 | [`q5_2.sql`](queries/unit5/q5_2.sql) | Which flights have no bookings, and what do outer joins preserve? | Left/right/full joins, `NOT EXISTS`, `EXCEPT` |
 | [`q5_3.sql`](queries/unit5/q5_3.sql) | How does PostgreSQL execute a multi-table join, and what would a cross join produce? | `CROSS JOIN`, `EXPLAIN (ANALYZE, BUFFERS)` |
 
-[Unit 5 leadership finding](analysis/unit5-finding.md)
+[Unit 5 analysis and reflection](analysis/unit5.md)
+[Unit 5 leadership findings and recommedation](analysis/unit5-finding.md)
 
 ### Unit 6 — Window functions and reporting
 
@@ -76,7 +73,8 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 | [`q6_2.sql`](queries/unit6/q6_2.sql) | How do consecutive fares, cumulative totals, moving averages, and activity gaps change over time? | `LAG`, `LEAD`, running `SUM`, moving `AVG` |
 | [`q6_3.sql`](queries/unit6/q6_3.sql) | What are the top three fares per flight, and how does the monthly no-show rate change? | `FIRST_VALUE`, top-N CTEs, `DATE_TRUNC`, `LAG` |
 
-[Unit 6 analysis and reflection](analysis/unit6.md) · [Final leadership memo](analysis/unit6-finding.md)
+[Unit 6 analysis and reflection](analysis/unit6.md) 
+[Final leadership memo](analysis/unit6-finding.md)
 
 ## Technical highlights
 
