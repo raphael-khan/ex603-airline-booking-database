@@ -2,7 +2,7 @@
 
 **A PostgreSQL portfolio project that models airline bookings and analyzes booking volume, passenger no-shows, fares, and operational trends using SQL.**
 
-## Project overview and domain
+## Domain overview
 
 An airline booking platform connects passengers, flights, airports, and bookings. In the initial modeling phase (Units 1–2), I designed a relational schema to represent passenger reservations and the airports associated with each flight. This work focused on entities, relationships, primary and foreign keys, and constraints that protect data integrity.
 
@@ -12,14 +12,9 @@ The project follows a progression from row-level data validation and aggregation
 
 ## Database overview
 
-### Relational design (Units 1–2)
-
 The initial ERD models five core entities: `PASSENGER`, `FLIGHT`, `AIRPORT`, `BOOKING`, and `FLIGHT_ROUTE`. `BOOKING` connects a passenger to a flight; `FLIGHT_ROUTE` associates a flight with airports and their departure/arrival roles. Keys, foreign-key constraints, and domain checks support referential integrity.
 
 ![Original passenger booking ERD](https://github.com/user-attachments/assets/0e47190f-8a0f-4c9a-83f7-32b32762a644)
-
-
-### Tables overview (Units 3–6)
 
 The Unit 3 reference DDL and seed data are contained in [`airline.sql`](airline.sql). Its main tables are:
 
