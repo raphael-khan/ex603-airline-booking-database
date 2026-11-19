@@ -63,8 +63,8 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 | [`q5_2.sql`](queries/unit5/q5_2.sql) | Which flights have no bookings, and what do outer joins preserve? | Left/right/full joins, `NOT EXISTS`, `EXCEPT` |
 | [`q5_3.sql`](queries/unit5/q5_3.sql) | How does PostgreSQL execute a multi-table join, and what would a cross join produce? | `CROSS JOIN`, `EXPLAIN (ANALYZE, BUFFERS)` |
 
-[Unit 5 analysis and reflection](analysis/unit5.md). 
-[Unit 5 leadership findings and recommedation](analysis/unit5-finding.md). 
+[Unit 5 analysis and reflection](analysis/unit5.md)\
+[Unit 5 leadership findings and recommedation](analysis/unit5-finding.md)
 
 ### Unit 6 — Window functions and reporting
 
@@ -74,8 +74,8 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 | [`q6_2.sql`](queries/unit6/q6_2.sql) | How do consecutive fares, cumulative totals, moving averages, and activity gaps change over time? | `LAG`, `LEAD`, running `SUM`, moving `AVG` |
 | [`q6_3.sql`](queries/unit6/q6_3.sql) | What are the top three fares per flight, and how does the monthly no-show rate change? | `FIRST_VALUE`, top-N CTEs, `DATE_TRUNC`, `LAG` |
 
-[Unit 6 analysis and reflection](analysis/unit6.md). 
-[Final leadership memo](analysis/unit6-finding.md). 
+[Unit 6 analysis and reflection](analysis/unit6.md)\
+[Final leadership memo](analysis/unit6-finding.md)
 
 ## Technical highlights
 
