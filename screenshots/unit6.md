@@ -22,3 +22,30 @@
 <img width="1802" height="1826" alt="image" src="https://github.com/user-attachments/assets/9e820882-5220-4222-af06-cd588ccf10f3" />
 
 <br /><br />
+
+<h3>Task 6.2 A</h3>
+<img width="2618" height="1822" alt="image" src="https://github.com/user-attachments/assets/71518431-5848-4ef8-a379-4467ee66d3f4" />
+
+<br /><br />
+
+<h3>Task 6.2 A</h3>
+<img width="2618" height="1822" alt="image" src="https://github.com/user-attachments/assets/71518431-5848-4ef8-a379-4467ee66d3f4" />
+
+<br /><br />
+
+<h3>Task 6.2 B1</h3>
+<img width="2618" height="1822" alt="image" src="https://github.com/user-attachments/assets/71518431-5848-4ef8-a379-4467ee66d3f4" />
+
+<br /><br />
+
+<h3>Task 6.2 B2</h3>
+<img width="1926" height="1486" alt="image" src="https://github.com/user-attachments/assets/2a3d02df-d4b8-4a9a-a71b-98220fc8c0ec" />
+
+<br /><br />
+
+<h3>Task 6.2 C</h3>
+<img width="2620" height="1894" alt="image" src="https://github.com/user-attachments/assets/5ee71629-cf0d-48f3-bdf0-5f40668c7b1c" />
+
+<br /><br />
+
+
