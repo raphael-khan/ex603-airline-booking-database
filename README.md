@@ -52,8 +52,8 @@ The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. 
 | [`q4_2.sql`](queries/unit4/q4_2.sql) | How do no-shows vary by region and platform-wide? | `GROUPING SETS` |
 | [`q4_2.sql`](queries/unit4/q4_2.sql) | Which high-volume flights warrant attention? | CTEs, second-stage aggregation |
 
-[Unit 4 findings and reflection](analysis/unit4.md). 
-[Unit 4 leadership breakdown](analysis/unit4-finding.md). 
+[Unit 4 findings and reflection](analysis/unit4.md)\
+[Unit 4 leadership breakdown](analysis/unit4-finding.md)
 
 ### Unit 5 — Connecting tables and query performance
 
