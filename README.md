@@ -16,7 +16,7 @@ The initial ERD models five core entities: `PASSENGER`, `FLIGHT`, `AIRPORT`, `BO
 
 ![Original passenger booking ERD](https://github.com/user-attachments/assets/0e47190f-8a0f-4c9a-83f7-32b32762a644)
 
-The Unit 3 reference DDL and seed data are contained in [`airline.sql`](airline.sql). Its main tables are:
+The Unit 3 reference DDL and seed data are contained in [`airline.sql`](https://github.com/raphael-khan/ex603-airline-booking-database/blob/main/schema/airline.sql). Its main tables are:
 
 | Table | Role in the analysis |
 | --- | --- |
@@ -30,8 +30,6 @@ The Unit 3 reference DDL and seed data are contained in [`airline.sql`](airline.
 The reference dataset contains **200 bookings, 30 passengers, and 15 flights**. In the analytical work, an **event** means a booking, a **producer** means a flight, and the principal financial metric is `bookings.fare_paid`. A **passenger no-show** is defined narrowly as a booking with `booking_status = 'cancelled'` and `cancellation_reason = 'Passenger no show'`; it does not include every type of cancellation or dispute. The dataset does not explicitly specify a currency for fares.
 
 ## Query catalogue
-
-### Units 1–2 — Relational modeling and DDL
 
 | Deliverable | Question addressed |
 | --- | --- |
