@@ -118,17 +118,12 @@ The video will walk through the business problem, selected queries from Units 3â
 **Requirements:** PostgreSQL with the `psql` command-line client, and the repository files.
 
 ```bash
-# Clone the public repository
 git clone https://github.com/raphael-khan/ex603-airline-booking-database.git
 cd ex603-airline-booking-database
 
-# Create the database
-createdb ex603_data
+createdb ex603_data                                # skip if using an existing database
+psql -d ex603_data -f schema/airline.sql           # add -U/-h if your setup needs them
 
-# Load the instructor-provided schema and sample records
-psql -d ex603_data -f airline.sql
-
-# Execute example analytical queries
 psql -d ex603_data -f queries/unit4/q4_1.sql
 psql -d ex603_data -f queries/unit6/q6_3.sql
 ```
