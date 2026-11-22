@@ -109,7 +109,7 @@ A useful next step would be to join bookings with scheduled flight operations an
 
 ## Video presentation
 
-**Presentation video:** *Link to be added after recording and uploading.*
+
 
 The video will walk through the business problem, selected queries from Units 3–6, the most important findings, and the recommended next-quarter actions. It will focus on analytical reasoning rather than recreating the supplied Unit 3 schema.
 
