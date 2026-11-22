@@ -109,7 +109,7 @@ A useful next step would be to join bookings with scheduled flight operations an
 
 ## Video presentation
 
-[![EX603 - Video Presentation](https://youtube.com)](https://youtu.be/O6ZOdPIyE-0)
+[![EX603 - Video Presentation]](https://youtu.be/O6ZOdPIyE-0)
 
 The video will walk through the business problem, selected queries from Units 4–6, the most important findings, leadership memo and the recommended next-quarter actions.
 
